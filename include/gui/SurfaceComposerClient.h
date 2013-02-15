@@ -107,6 +107,8 @@ public:
 
     //! Flag the currently open transaction as an animation transaction.
     static void setAnimationTransaction();
+   
+    static status_t getDisplayInfo(DisplayID dpy, DisplayInfo* info);
 
     status_t    hide(SurfaceID id);
     status_t    show(SurfaceID id);

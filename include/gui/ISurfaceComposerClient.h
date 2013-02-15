@@ -32,6 +32,9 @@
 namespace android {
 // ----------------------------------------------------------------------------
 
+typedef int32_t    DisplayID;
+
+//-----------------------------------------------------------------------------
 class ISurfaceComposerClient : public IInterface
 {
 public:

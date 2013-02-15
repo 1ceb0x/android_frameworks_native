@@ -98,6 +98,7 @@ public:
     // post a synchronous message to the main thread
     status_t postMessageSync(const sp<MessageBase>& msg, nsecs_t reltime = 0,
         uint32_t flags = 0);
+    virtual sp<IMemoryHeap>             getCblk() const;
 
     // force full composition on all displays
     void repaintEverything();
@@ -405,6 +406,7 @@ private:
     bool mTransactionPending;
     bool mAnimTransactionPending;
     Vector<sp<LayerBase> > mLayersPendingRemoval;
+    sp<IMemoryHeap> mServerHeap;
 
     // protected by mStateLock (but we could use another lock)
     bool mLayersRemoved;

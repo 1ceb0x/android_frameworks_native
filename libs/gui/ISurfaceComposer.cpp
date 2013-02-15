@@ -68,6 +68,14 @@ public:
         return interface_cast<IGraphicBufferAlloc>(reply.readStrongBinder());
     }
 
+    virtual sp<IMemoryHeap> getCblk() const
+    {
+        Parcel data, reply;
+        data.writeInterfaceToken(ISurfaceComposer::getInterfaceDescriptor());
+        remote()->transact(BnSurfaceComposer::GET_CBLK, data, &reply);
+        return interface_cast<IMemoryHeap>(reply.readStrongBinder());
+    }
+
     virtual void setTransactionState(
             const Vector<ComposerState>& state,
             const Vector<DisplayState>& displays,

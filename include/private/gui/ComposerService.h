@@ -30,6 +30,7 @@ namespace android {
 
 class IMemoryHeap;
 class ISurfaceComposer;
+class surface_flinger_cblk_t;
 
 // ---------------------------------------------------------------------------
 
@@ -42,9 +43,10 @@ class ISurfaceComposer;
 class ComposerService : public Singleton<ComposerService>
 {
     sp<ISurfaceComposer> mComposerService;
+    sp<IMemoryHeap> mServerCblkMemory;
     sp<IBinder::DeathRecipient> mDeathObserver;
     Mutex mLock;
-
+    surface_flinger_cblk_t volatile* mServerCblk;
     ComposerService();
     void connectLocked();
     void composerServiceDied();
@@ -54,6 +56,7 @@ public:
     // Get a connection to the Composer Service.  This will block until
     // a connection is established.
     static sp<ISurfaceComposer> getComposerService();
+    static surface_flinger_cblk_t const volatile * getControlBlock();
 };
 
 // ---------------------------------------------------------------------------

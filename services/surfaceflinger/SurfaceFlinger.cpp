@@ -67,7 +67,7 @@
 #include "DisplayHardware/FramebufferSurface.h"
 #include "DisplayHardware/GraphicBufferAlloc.h"
 #include "DisplayHardware/HWComposer.h"
-
+#include <private/gui/SharedBufferStack.h>
 
 #define EGL_VERSION_HW_ANDROID  0x3143
 
@@ -150,6 +150,11 @@ void SurfaceFlinger::binderDied(const wp<IBinder>& who)
 
     // restart the boot-animation
     startBootAnim();
+}
+
+sp<IMemoryHeap> SurfaceFlinger::getCblk() const
+{
+return mServerHeap;
 }
 
 sp<ISurfaceComposerClient> SurfaceFlinger::createConnection()

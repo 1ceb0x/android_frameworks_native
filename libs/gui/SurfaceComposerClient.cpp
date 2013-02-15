@@ -38,6 +38,7 @@
 
 #include <private/gui/ComposerService.h>
 #include <private/gui/LayerState.h>
+#include <private/gui/SharedBufferStack.h>
 
 namespace android {
 // ---------------------------------------------------------------------------
@@ -55,6 +56,9 @@ void ComposerService::connectLocked() {
     while (getService(name, &mComposerService) != NO_ERROR) {
         usleep(250000);
     }
+    mServerCblkMemory = mComposerService->getCblk();
+    mServerCblk = static_cast<surface_flinger_cblk_t volatile *>(
+                  mServerCblkMemory->getBase());
     assert(mComposerService != NULL);
 
     // Create the death listener.
@@ -89,6 +93,14 @@ void ComposerService::composerServiceDied()
     Mutex::Autolock _l(mLock);
     mComposerService = NULL;
     mDeathObserver = NULL;
+}
+
+surface_flinger_cblk_t const volatile * ComposerService::getControlBlock() {
+                       return ComposerService::getInstance().mServerCblk;
+}
+
+static inline surface_flinger_cblk_t const volatile * get_cblk() {
+                       return ComposerService::getControlBlock();
 }
 
 // ---------------------------------------------------------------------------
@@ -573,6 +585,25 @@ status_t SurfaceComposerClient::getDisplayInfo(
         const sp<IBinder>& display, DisplayInfo* info)
 {
     return ComposerService::getComposerService()->getDisplayInfo(display, info);
+}
+
+status_t SurfaceComposerClient::getDisplayInfo(
+        DisplayID dpy, DisplayInfo* info)
+{
+    if (uint32_t(dpy)>=NUM_DISPLAY_MAX)
+        return BAD_VALUE;
+
+    volatile surface_flinger_cblk_t const * cblk = get_cblk();
+    volatile display_cblk_t const * dcblk = cblk->displays + dpy;
+
+    info->w              = dcblk->w;
+    info->h              = dcblk->h;
+    info->orientation    = dcblk->orientation;
+    info->xdpi           = dcblk->xdpi;
+    info->ydpi           = dcblk->ydpi;
+    info->fps            = dcblk->fps;
+    info->density        = dcblk->density;
+    return getPixelFormatInfo(dcblk->format, &(info->pixelFormatInfo));
 }
 
 void SurfaceComposerClient::blankDisplay(const sp<IBinder>& token) {

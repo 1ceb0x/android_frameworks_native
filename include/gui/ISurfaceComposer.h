@@ -63,6 +63,9 @@ public:
      */
     virtual sp<IGraphicBufferAlloc> createGraphicBufferAlloc() = 0;
 
+    /* retrieve the control block */
+    virtual sp<IMemoryHeap> getCblk() const = 0;
+
     /* return an IDisplayEventConnection */
     virtual sp<IDisplayEventConnection> createDisplayEventConnection() = 0;
 
@@ -121,6 +124,7 @@ public:
         BOOT_FINISHED = IBinder::FIRST_CALL_TRANSACTION,
         CREATE_CONNECTION,
         CREATE_GRAPHIC_BUFFER_ALLOC,
+        GET_CBLK,
         CREATE_DISPLAY_EVENT_CONNECTION,
         CREATE_DISPLAY,
         GET_BUILT_IN_DISPLAY,

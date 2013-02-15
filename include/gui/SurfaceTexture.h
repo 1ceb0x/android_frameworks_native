@@ -325,12 +325,6 @@ private:
     // and can be changed with a call to attachToContext.
     GLuint mTexName;
 
-    // mUseFenceSync indicates whether creation of the EGL_KHR_fence_sync
-    // extension should be used to prevent buffers from being dequeued before
-    // it's safe for them to be written. It gets set at construction time and
-    // never changes.
-    const bool mUseFenceSync;
-
     // mTexTarget is the GL texture target with which the GL texture object is
     // associated.  It is set in the constructor and never changed.  It is
     // almost always GL_TEXTURE_EXTERNAL_OES except for one use case in Android
